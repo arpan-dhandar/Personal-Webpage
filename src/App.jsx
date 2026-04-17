@@ -6,12 +6,14 @@ import Contact from "./components/Contact";
 
 const App = () => {
   return (
-    <div className="bg-black h-screen w-screen">
+    // min-h-screen allows the page to grow with content
+    // overflow-x-hidden prevents unwanted side-scrolling
+    <div className="bg-black min-h-screen w-full overflow-x-hidden">
       <Header />
       <Home />
       <About />
       <Work />
-      {/* <Contact /> */}
+      <Contact />
     </div>
   );
 };

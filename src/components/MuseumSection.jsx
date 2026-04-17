@@ -1,114 +1,79 @@
-import React, { useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import React from 'react';
+import { ExternalLink, Github, Layers } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger);
-
-const colors = [
-  "bg-red-500", "bg-blue-500", "bg-yellow-500", 
-  "bg-purple-500", "bg-orange-500", "bg-emerald-500", "bg-rose-500"
+const projects = [
+  {
+    title: "Celestial Dashboard",
+    category: "Web Architecture",
+    description: "A high-performance data visualization engine with real-time stream processing.",
+    tags: ["React", "Tailwind", "D3.js"],
+    link: "#"
+  },
+  {
+    title: "Void OS",
+    category: "System Design",
+    description: "An experimental terminal-based portfolio interface mimicking a retro-futuristic OS.",
+    tags: ["Next.js", "TypeScript", "GSAP"],
+    link: "#"
+  },
+  {
+    title: "Lumina Gallery",
+    category: "UI/UX Research",
+    description: "A concept store for digital assets featuring immersive CSS-based lighting effects.",
+    tags: ["Three.js", "Framer Motion"],
+    link: "#"
+  }
 ];
 
 const MuseumSection = () => {
-  const scrollRef = useRef(null);
-  const triggerRef = useRef(null);
-  const revealTextRef = useRef(null);
-
-  useGSAP(() => {
-    // 1. THE MAIN HORIZONTAL MOVE
-    const mainTrack = gsap.to(scrollRef.current, {
-      x: "-350vw", 
-      ease: "none",
-      scrollTrigger: {
-        trigger: triggerRef.current,
-        pin: true,
-        scrub: 1,
-        start: "top top",
-        end: "+=5000",
-        anticipatePin: 1,
-        fastScrollEnd: true,
-        invalidateOnRefresh: true,
-      }
-    });
-
-    // 2. RANDOM INDEPENDENT MOVEMENT FOR EACH BOX
-    const boxes = gsap.utils.toArray(".museum-box");
-    
-    boxes.forEach((box) => {
-      const randomRotation = gsap.utils.random(-35, 35);
-      const randomY = gsap.utils.random(-50, 50);
-      const randomXOffset = gsap.utils.random(-100, 100); 
-
-      gsap.to(box, {
-        rotation: randomRotation,
-        y: randomY,
-        x: randomXOffset,
-        ease: "power1.inOut",
-        scrollTrigger: {
-          trigger: box, 
-          containerAnimation: mainTrack,
-          start: "left right", 
-          end: "right left",  
-          scrub: 1,        
-        },
-      });
-    });
-
-    // 3. TEXT FADE-IN LOGIC (Synced with horizontal animation)
-    gsap.fromTo(
-      revealTextRef.current,
-      { 
-        opacity: 0,
-      },
-      {
-        opacity: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: scrollRef.current,
-          containerAnimation: mainTrack,
-          start: "60% center",
-          end: "90% center",
-          scrub: true,
-        }
-      }
-    );
-
-  }, { scope: triggerRef });
-
   return (
-    <div ref={triggerRef} className="relative h-screen w-full overflow-hidden bg-[#004d2c]">
-      {/* REVEAL TEXT (Behind the cards) */}
-      <div ref={revealTextRef} className="absolute inset-0 flex flex-col items-center justify-center z-0">
-        <h2 className="text-[12vw] font-black text-[#10b981] leading-none text-center uppercase italic">
-          Museum<br />Of Money
-        </h2>
-        <div className="mt-10 px-6 py-3 border border-[#10b981] rounded-xl text-white uppercase text-lg font-bold tracking-widest cursor-pointer hover:bg-white hover:text-[#10b981] transition-all">
-          View All Cards
-        </div>
-      </div>
+    <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      {projects.map((project, index) => (
+        <div 
+          key={index} 
+          className="group relative bg-[#0a0a0c] border border-gray-800 rounded-2xl p-8 transition-all duration-500 hover:border-[#AD46FF]/50 hover:-translate-y-2 shadow-2xl overflow-hidden"
+        >
+          {/* Subtle Background Glow on Hover */}
+          <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[#AD46FF]/5 blur-[50px] group-hover:bg-[#AD46FF]/20 transition-all duration-500 rounded-full" />
 
-      {/* THE FLOATING TRACK (Cards) */}
-      <div 
-        ref={scrollRef} 
-        className="relative z-10 flex h-full items-center pointer-events-none"
-        style={{ width: "450vw", paddingLeft: "100vw" }} 
-      >
-        {colors.map((color, index) => (
-          <div
-            key={index}
-            className={`museum-box ${color} w-80 h-112 mx-10 shrink-0 rounded-xl shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-10 border-white flex items-end p-6`}
-            style={{
-              zIndex: 10 + index 
-            }}
-          >
-            <div className="w-full">
-              <div className="h-3 w-20 bg-white/20 rounded mb-2" />
-              <div className="h-6 w-full bg-white/10 rounded" />
+          {/* Icon/Category Header */}
+          <div className="flex justify-between items-start mb-6">
+            <div className="p-3 bg-black border border-gray-800 rounded-lg group-hover:border-[#AD46FF]/50 transition-colors">
+              <Layers className="text-[#AD46FF] w-6 h-6" />
+            </div>
+            <div className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <Github className="w-5 h-5 text-gray-500 hover:text-white cursor-pointer" />
+              <ExternalLink className="w-5 h-5 text-gray-500 hover:text-[#AD46FF] cursor-pointer" />
             </div>
           </div>
-        ))}
-      </div>
+
+          {/* Project Details */}
+          <h4 className="text-[#AD46FF] text-xs font-bold uppercase tracking-[0.2em] mb-2">
+            {project.category}
+          </h4>
+          <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-white">
+            {project.title}
+          </h3>
+          <p className="text-gray-400 text-sm leading-relaxed mb-8">
+            {project.description}
+          </p>
+
+          {/* Tech Stack Tags */}
+          <div className="flex flex-wrap gap-2 mt-auto">
+            {project.tags.map((tag, i) => (
+              <span 
+                key={i} 
+                className="text-[10px] font-mono px-2 py-1 bg-black border border-gray-800 rounded text-gray-500 group-hover:border-[#AD46FF]/30 group-hover:text-[#AD46FF]/80 transition-all"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Decorative Corner Accent */}
+          <div className="absolute top-0 right-0 w-1 h-0 bg-[#AD46FF] group-hover:h-full transition-all duration-500" />
+        </div>
+      ))}
     </div>
   );
 };
